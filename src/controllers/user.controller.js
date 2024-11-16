@@ -27,7 +27,7 @@ const generateAccessAndRefreshTokens = async (userId) => {  //no asyncHanlder be
 }
 
 const registerUser = asyncHandler(async (req, res) => {
-   //(1) get user details from frontend i.e user model
+   //(1) get user details from frontend in the req.body
    const { fullName, email, username, password } = req.body
 
    //(2) Validation --ADV WAY**
@@ -265,14 +265,22 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Avatar file is missing")
    }
 
-   //TODO: delete old image - assignment
-   const newAvatar = await uploadOnCloudinary(avatarLocalPath)  //new avatar uploading on cloduinary
-
+   // uploading new avatar on cloudinary
+   const newAvatar = await uploadOnCloudinary(avatarLocalPath)  
    if (!newAvatar.url) {
       throw new ApiError(400, "Error while uploading on avatar")
 
    }
-
+   
+   // Deleting old avatar from Cloudinary (if it exists)
+   if (req.user?.avatar) {
+      const oldAvatar = await deleteFromCloudinary(req.user.avatar);
+      if (!oldAvatar) {
+         throw new ApiError(400, "Error while deleting old avatar");
+      }
+   }
+   
+   //update the D.B
    const user = await User.findByIdAndUpdate(
       req.user?._id,
       {
