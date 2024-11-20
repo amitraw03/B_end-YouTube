@@ -69,11 +69,11 @@ userSchema.methods.generateAccessToken = function () {
     return jwt.sign({   //takes 3 params
         _id: this._id,
         username: this.username,
-                   },
+    },
         process.env.ACCESS_TOKEN_SECRET,
-                  {
+        {
             expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-                  })
+        })
 }
 
 userSchema.methods.generateRefreshToken = function () {

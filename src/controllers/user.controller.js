@@ -44,6 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
    })
    if (existedUser) throw new ApiError(409, " data with this username or email is already existed")
 
+      // console.log(req.files)
    //(4) check for images , check for avatar
    const avatarLocalPath = req.files?.avatar[0]?.path;   //req.files is a multer property (just like req.body is of express) & now checking before sending to cloudinary
    const coverImageLocalPath = req.files?.coverImage[0]?.path;
